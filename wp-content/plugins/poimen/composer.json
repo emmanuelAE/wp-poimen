@@ -1,0 +1,15 @@
+{
+    "name": "icc-grenoble/poimen",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "IccGrenoble\\Poimen\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "icc-grenoble"
+        }
+    ],
+    "require": {}
+}

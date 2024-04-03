@@ -1,0 +1,12 @@
+# Ignore all files and directories
+*
+!.gitignore
+# Ignore tous les fichiers
+# Sauf le répertoire de votre extension et ses fichiers
+!wp-content/
+!wp-content/plugins/
+!wp-content/plugins/poimen/
+!wp-content/plugins/poimen/**
+
+
+
