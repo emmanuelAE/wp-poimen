@@ -62,45 +62,117 @@ class PoimenObject {
         'role__in' => array('subscriber', 'administrator'),
         ));
         foreach ($leaders as $leader) {
-        $leaderSouls = get_user_meta($leader->ID, 'associated_clients', true);
-        if (!empty($leaderSouls)) {
-            $notSubmittedSoul = array(); // Initialise un tableau pour stocker les âmes non soumises
-            foreach ($leaderSouls as $soulID => $soul) {
-                $lastSubmissionTimestamp = isset($soul['last_submitted_date']) ? $soul['last_submitted_date'] : null;
-                if ($lastSubmissionTimestamp !== null && $lastSubmissionTimestamp <= strtotime($DEADLINE, time())) {
-                    $notSubmittedSoul[] = $soul['name']; // Ajoute les âmes non soumises au tableau
+            $leaderSouls = get_user_meta($leader->ID, 'associated_clients', true);
+            if (!empty($leaderSouls)) {
+                $notSubmittedSoul = array(); // Initialise un tableau pour stocker les âmes non soumises
+                $notSubmittedSoulDetails = array() ; // On stock plus de details. Rajouter pour stocker le niveau de rappel
+                                                                                    // Sans détruire le fonctionnel passé.
+                foreach ($leaderSouls as $soulID => $soul) {
+                    $lastSubmissionTimestamp = isset($soul['last_submitted_date']) ? $soul['last_submitted_date'] : null;
+                    if ($lastSubmissionTimestamp !== null && $lastSubmissionTimestamp <= strtotime($DEADLINE, time())) {
+                        $notSubmittedSoul[] = $soul['name']; // Ajoute les âmes non soumises au tableau
+                        $notSubmittedSoulDetails[] = array('name' => $soul['name'],
+                                                                                         'reminder_level' => isset($soul['reminder_level']) ? $soul['reminder_level'] : null
+                                                                                         ) ;
+                    }
+                }
+                // Ajoute les informations sur le leader au tableau principal avec les âmes non soumises agrégées
+                if (!empty($notSubmittedSoul)) {
+                    $lateLeader[] = array(
+                        'ID' => $leader->ID,
+                        'name' => $leader->display_name,
+                        'email' => $leader->user_email,
+                        'notSubmittedSoul' => implode(',', $notSubmittedSoul), // Convertit le tableau en une chaîne séparée par des virgules
+                        'notSubmittedSoulDetails' => $notSubmittedSoulDetails // Ajout des détails
+                    );
                 }
             }
-            // Ajoute les informations sur le leader au tableau principal avec les âmes non soumises agrégées
-            if (!empty($notSubmittedSoul)) {
-                $lateLeader[] = array(
-                    'name' => $leader->display_name,
-                    'email' => $leader->user_email,
-                    'notSubmittedSoul' => implode(',', $notSubmittedSoul) // Convertit le tableau en une chaîne séparée par des virgules
-                );
-            }
-        }
         }
         return $lateLeader;
     }
 
-    public function __reminderLeader(){
-        
-        $lateLeader = self::__lateLeader(SECOND_REMINDER) ;
-        if (!empty($lateLeader)) {
-            foreach ($lateLeader as $leader) {
-                self::sendEmail([$leader['email']], 'Rappel', SECOND_REMINDER_MESSAGE) ;
+    public function __reminderLeader() {
+        $firstReminderLateLeader = self::__lateLeader(FIRST_REMINDER);
+        $secondReminderLateLeader = self::__lateLeader(SECOND_REMINDER);
+    
+        // Préparation des emails de rappel de niveau 1
+        $firstReminderEmails = [];
+        foreach ($firstReminderLateLeader as $leader) {
+            $soulNames = array_column(array_filter($leader['notSubmittedSoulDetails'], function($soulDetails) {
+                return $soulDetails['reminder_level'] === 0;
+            }), 'name');
+    
+            if (!empty($soulNames)) {
+                $firstReminderEmails[] = [
+                    'leader' => $leader,
+                    'email' => $leader['email'],
+                    'soulNames' => $soulNames
+                ];
+    
+                // Mettre à jour le niveau de rappel uniquement si l'email est envoyé
+                $leaderSouls = get_user_meta($leader['ID'], 'associated_clients', true);
+                foreach ($leaderSouls as &$soul) {
+                    if (in_array($soul['name'], $soulNames)) {
+                        $soul['reminder_level'] = 1;
+                    }
+                }
+                update_user_meta($leader['ID'], 'associated_clients', $leaderSouls);
             }
-            return ;
         }
-        
-        $lateLeader = self::__lateLeader(FIRST_REMINDER) ;
-        if (!empty($lateLeader)) {
-            foreach ($lateLeader as $leader) {
-                self::sendEmail([$leader['email']], 'Rappel', FIRST_REMINDER_MESSAGE) ;
+    
+        // Préparation des emails de rappel de niveau 2
+        $secondReminderEmails = [];
+        foreach ($secondReminderLateLeader as $leader) {
+            $soulNames = array_column(array_filter($leader['notSubmittedSoulDetails'], function($soulDetails) {
+                return $soulDetails['reminder_level'] === 1;
+            }), 'name');
+    
+            if (!empty($soulNames)) {
+                $secondReminderEmails[] = [
+                    'leader' => $leader,
+                    'email' => $leader['email'],
+                    'soulNames' => $soulNames
+                ];
+    
+                // Mettre à jour le niveau de rappel uniquement si l'email est envoyé
+                $leaderSouls = get_user_meta($leader['ID'], 'associated_clients', true);
+                foreach ($leaderSouls as &$soul) {
+                    if (in_array($soul['name'], $soulNames)) {
+                        $soul['reminder_level'] = 2;
+                    }
+                }
+                update_user_meta($leader['ID'], 'associated_clients', $leaderSouls);
             }
-            return ;
         }
+    
+        // Envoi des emails de rappel
+        foreach ($firstReminderEmails as $reminder) {
+            $message = FIRST_REMINDER_MESSAGE . " Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            self::sendEmail([$reminder['email']], 'Rappel', $message);
+        }
+    
+        foreach ($secondReminderEmails as $reminder) {
+            $message = SECOND_REMINDER_MESSAGE . " Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            self::sendEmail([$reminder['email']], 'Rappel', $message);
+        }
+    
+    
+        
+        // $lateLeader = self::__lateLeader(SECOND_REMINDER) ;
+        // if (!empty($lateLeader)) {
+        //     foreach ($lateLeader as $leader) {
+        //         self::sendEmail([$leader['email']], 'Rappel', SECOND_REMINDER_MESSAGE) ;
+        //     }
+        //     return ;
+        // }
+        
+        // $lateLeader = self::__lateLeader(FIRST_REMINDER) ;
+        // if (!empty($lateLeader)) {
+        //     foreach ($lateLeader as $leader) {
+        //         self::sendEmail([$leader['email']], 'Rappel', FIRST_REMINDER_MESSAGE) ;
+        //     }
+        //     return ;
+        // }
     }
 
     public function sendEmail(array $recipient, string $subject, string $message) {

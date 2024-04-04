@@ -61,9 +61,9 @@ function __createDevConstants(){
     define('DEADLINE', '-'.FILL_FREQUENCY.FILL_NUMBER);
 
     define('FIRST_REMINDER', '-'.(FILL_FREQUENCY-3).FILL_NUMBER);
-    define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous ,n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\nMerci et Bonne journée.");
+    define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\n\n.");
     define('SECOND_REMINDER', '-'.(FILL_FREQUENCY-1).FILL_NUMBER);
-    define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous ,n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\nMerci et Bonne journée.");
+    define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous ,n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\n\n.");
 
     // Email Constant
     define(
