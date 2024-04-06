@@ -8,7 +8,10 @@ Author: poimen
 Author URI: http://example.com
 License: GPL2
 */
+date_default_timezone_set('Europe/Paris');
+
 define('POIMEN_PLUGIN_DIR', plugin_dir_path(__FILE__));
+
 
 // function __createProdConstants(){
 //     // CRON Constant
@@ -60,10 +63,10 @@ function __createDevConstants(){
     define('CRON_FREQUENCY', MINUTE_IN_SECONDS);
     define('DEADLINE', '-'.FILL_FREQUENCY.FILL_NUMBER);
 
-    define('FIRST_REMINDER', '-'.(FILL_FREQUENCY-3).FILL_NUMBER);
-    define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\n\n.");
-    define('SECOND_REMINDER', '-'.(FILL_FREQUENCY-1).FILL_NUMBER);
-    define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous ,n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\n\n.");
+    define('FIRST_REMINDER', '-'.(FILL_FREQUENCY-4).FILL_NUMBER);
+    define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\n.");
+    define('SECOND_REMINDER', '-'.(FILL_FREQUENCY-2).FILL_NUMBER);
+    define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\n.");
 
     // Email Constant
     define(
@@ -116,5 +119,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 $poimenController = new PoimenObject(__FILE__);
 $wpformController = new WPFormObject();
 
-error_log('POIMEN : REMINDERS'.FIRST_REMINDER .'-'.SECOND_REMINDER ) ; 
+// error_log('POIMEN : REMINDERS'.FIRST_REMINDER .'-'.SECOND_REMINDER ) ; 
 

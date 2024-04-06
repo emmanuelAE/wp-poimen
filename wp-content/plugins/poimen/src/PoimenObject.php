@@ -32,7 +32,9 @@ class PoimenObject {
     }
 
     public function customCronHandler() {
-        
+        // affichage de l'heure 
+        error_log('POIMENOBJECT : heure : '.date('Y-m-d H:i:s',time()));
+
         // Check if we need to notify admins 
         $this->__notifyAdmin() ;
         // Notify the late leaders
@@ -47,7 +49,7 @@ class PoimenObject {
         // Notify the admin of the late leaders
         $lateLeader = self::__lateLeader() ;
         $___lateLeader = print_r($lateLeader, true) ;
-        error_log('POIMENOBJECT : Late Leader : ' . $___lateLeader) ;
+        // error_log('POIMENOBJECT : Late Leader : ' . $___lateLeader) ;
         if (empty($lateLeader)) {
             return ;
         }
@@ -147,7 +149,7 @@ class PoimenObject {
     
         // Envoi des emails de rappel
         foreach ($firstReminderEmails as $reminder) {
-            $message = FIRST_REMINDER_MESSAGE . " Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            $message = FIRST_REMINDER_MESSAGE . "Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
             self::sendEmail([$reminder['email']], 'Rappel', $message);
         }
     
@@ -235,7 +237,7 @@ class PoimenObject {
                 $soulsNames[] = $soul['name'];
             }
         }
-        error_log('POIMENOBJECT : Souls Names : ' . print_r($soulsNames, true));
+        // error_log('POIMENOBJECT : Souls Names : ' . print_r($soulsNames, true));
         return $soulsNames;
     }   
 

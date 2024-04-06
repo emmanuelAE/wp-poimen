@@ -113,6 +113,7 @@ class WPFormObject {
         foreach ($leaderSouls as $soulID => $soul) {
             if (strtolower($soul['name']) === strtolower($soulName)) {
                 $leaderSouls[$soulID]['last_submitted_date'] = time();
+                $leaderSouls[$soulID]['reminder_level'] = 0; // Reset reminder level
                 update_user_meta($leaderID, 'associated_clients', $leaderSouls);
                 return ;
             }
