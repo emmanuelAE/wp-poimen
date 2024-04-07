@@ -149,7 +149,7 @@ class PoimenObject {
     
         // Envoi des emails de rappel
         foreach ($firstReminderEmails as $reminder) {
-            $message = FIRST_REMINDER_MESSAGE . "Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            $message = FIRST_REMINDER_MESSAGE . "Voici les âmes dont les rapports n'ont pas été soumis : " . implode(',  ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
             self::sendEmail([$reminder['email']], 'Rappel', $message);
         }
     
@@ -184,7 +184,7 @@ class PoimenObject {
     public function __createEmailBody($lateLeader, bool $admin = true) {
         $body = $admin ? ADMIN_EMAIL_BODY : LEADER_EMAIL_BODY;
         foreach ($lateLeader as $leader) {
-        $body .= $leader['name'] . ' : ' . $leader['notSubmittedSoul'] . ".\n";
+            $body .= $leader['name'].'('.$leader['email'].')'. ' : ' . $leader['notSubmittedSoul'] . ".\n";
         }
         return $body ;
     }
