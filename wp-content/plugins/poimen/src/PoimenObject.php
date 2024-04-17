@@ -1,7 +1,7 @@
 <?php
 namespace IccGrenoble\Poimen ; 
 
-class PoimenObject {
+class PoimenObject { 
     
     public function __construct(string $file) {
         // print to the navigation console
@@ -53,7 +53,7 @@ class PoimenObject {
         if (empty($lateLeader)) {
             return ;
         }
-        // Desactivate for now
+
         self::sendEmail(ADMIN_EMAIL, EMAIL_SUBJECT, self::__createEmailBody($lateLeader)) ;
         
     } 
