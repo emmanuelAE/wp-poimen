@@ -56,7 +56,7 @@ define('POIMEN_PLUGIN_DIR', plugin_dir_path(__FILE__));
 // }
 function __createDevConstants(){
     // CRON Constant
-    define ('FILL_FREQUENCY', 15) ;
+    define ('FILL_FREQUENCY', 50) ;
     define('FILL_NUMBER', 'minutes');
     define('CRON_NAME', 'poimen_cron');
     define('CRON_NUMBER', 5);

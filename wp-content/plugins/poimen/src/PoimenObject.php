@@ -202,7 +202,7 @@ class PoimenObject {
         }
         elseif (is_page(VOIR_SOULS_PAGE_NAME)) {
             wp_enqueue_script('dropdown', JS_FOLDER.'visualizeLaSoul.js' , array('jquery'), '1.0', true) ;
-            wp_localize_script('dropdown', 'datas', array('dropdownOptionName' => self::__getUsersWithMetaKey('associated_clients')));
+            wp_localize_script('dropdown', 'datas', array('dropdownOptionName' => self::__getUsersWithMetaKey(array('associated_clients'))));
         }
         else {
             return ;
@@ -241,8 +241,9 @@ class PoimenObject {
         return $soulsNames;
     }   
 
-    public function __getUsersWithMetaKey(string $metaKey) {
+    public function __getUsersWithMetaKeyOld(string $metaKey) {
         $users = get_users();
+        error_log('POIMENOBJECT : Users : ' . print_r($users, true));
         if (count($users) > 0) {
             $users_with_metadata = array();
             foreach ($users as $user) {
@@ -256,6 +257,32 @@ class PoimenObject {
             return array(); 
         }
     }
+
+    public function __getUsersWithMetaKey(array $metaKeys) {
+        $users = get_users();
+        error_log('POIMENOBJECT : Users : ' . print_r($users, true));
+        if (count($users) > 0) {
+            $users_with_metadata = array();
+            foreach ($users as $user) {
+                $user_meta = [];
+                foreach ($metaKeys as $metaKey) {
+                    $user_meta[$metaKey] = get_user_meta($user->ID, $metaKey, true);
+                }
+                $user_data = [
+                    'ID' => $user->ID,
+                    'user_login' => $user->user_login,
+                    'display_name' => $user->display_name,
+                    'user_meta' => $user_meta
+                ];
+                $users_with_metadata[] = $user_data;
+            }
+            return $users_with_metadata;
+        } 
+        else {
+            return array(); 
+        }
+    }
+    
 
     
 
