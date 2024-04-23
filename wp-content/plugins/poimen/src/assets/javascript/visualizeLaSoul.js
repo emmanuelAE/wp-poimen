@@ -17,6 +17,18 @@ const createOptions = function createOptions(element, optionList) {
 const createForm = function createForm(modal, lastSubmittedFormInfoObject) {
     modal.innerHTML = '';
     const form = createElement('form', { class: 'form-container' });
+    console.log(Object.keys(lastSubmittedFormInfoObject).length);
+    if (Object.keys(lastSubmittedFormInfoObject).length === 0) {
+        const formGroup = createElement('div', { class: 'form-group' });
+        const label = createElement('label');
+        label.textContent = "Désolé, cette fonctionnalité n'était pas disponible lors du dernier rapport du L.A\nMais pas d'inquiétude vous pourrai retrouver le prochian rapport ici."
+        formGroup.appendChild(label);
+        form.appendChild(formGroup);
+        modal.appendChild(form);
+        console.log('No data' );
+        console.log(formGroup);
+        return;
+    }
     for (let [key, value] of Object.entries(lastSubmittedFormInfoObject)) {
         const formGroup = createElement('div', { class: 'form-group' });
         const label = createElement('label', { for: key });
