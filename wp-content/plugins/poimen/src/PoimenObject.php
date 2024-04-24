@@ -241,23 +241,6 @@ class PoimenObject {
         return $soulsNames;
     }   
 
-    public function __getUsersWithMetaKeyOld(string $metaKey) {
-        $users = get_users();
-        error_log('POIMENOBJECT : Users : ' . print_r($users, true));
-        if (count($users) > 0) {
-            $users_with_metadata = array();
-            foreach ($users as $user) {
-                $user_meta = get_user_meta($user->ID, $metaKey, true);
-                $user->associated_clients = $user_meta;
-                $users_with_metadata[] = $user;
-            }
-            return $users_with_metadata;
-        } 
-        else {
-            return array(); 
-        }
-    }
-
     public function __getUsersWithMetaKey(array $metaKeys) {
         $users = get_users();
         error_log('POIMENOBJECT : Users : ' . print_r($users, true));
