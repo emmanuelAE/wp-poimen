@@ -35,9 +35,10 @@ class WPFormObject {
     }
 
     public function __processSuiviForm($fields, $entry, $form_data, $entry_id) {
+        
         $soulName = $fields[SUIVI_SOUL_FIELD_ID]['value'] ;
         $leaderID = get_current_user_id();
-        self::__updateSoulSubmissionDate($leaderID, $soulName);
+        self::__updateSoulSubmissionDate($leaderID, $soulName, $fields);
     }
 
     public function __processGestionForm($fields, $entry, $form_data, $entry_id) {
@@ -106,15 +107,21 @@ class WPFormObject {
         }
     }
 
-    public function __updateSoulSubmissionDate(int $leaderID, string $soulName) {
+    public function __updateSoulSubmissionDate(int $leaderID, string $soulName, array $form_fields = array()) {
+        $lastSubmittedFormInfo = array();
         $leaderSouls = get_user_meta($leaderID, 'associated_clients', true);
         if (empty($leaderSouls)) {
             return ;
         }
         foreach ($leaderSouls as $soulID => $soul) {
             if (strtolower($soul['name']) === strtolower($soulName)) {
+                // Build form info to store in DB
+                foreach ($form_fields as $field) {
+                    $lastSubmittedFormInfo[$field['name']] = $field['value'];
+                }
                 $leaderSouls[$soulID]['last_submitted_date'] = time();
                 $leaderSouls[$soulID]['reminder_level'] = 0; // Reset reminder level
+                $leaderSouls[$soulID]['last_submitted_form_info'] = $lastSubmittedFormInfo;
                 update_user_meta($leaderID, 'associated_clients', $leaderSouls);
                 return ;
             }
