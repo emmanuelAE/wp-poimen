@@ -90,6 +90,7 @@ class WPFormObject {
     
     public function __removeSoulFromLeader(int $leaderID, string $soulName) {
         $leaderSouls = get_user_meta($leaderID, 'associated_clients', true);
+        $leaderSouls = array_reverse($leaderSouls, true); //Reverse the array to remove the oldest soul
         error_log('WPFORMOBJECT : Nb of leader : ' . print_r(count($leaderSouls),true));
         if (empty($leaderSouls)) {
             return ;
