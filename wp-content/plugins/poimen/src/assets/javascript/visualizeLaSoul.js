@@ -21,7 +21,7 @@ const createForm = function createForm(modal, lastSubmittedFormInfoObject) {
     if (Object.keys(lastSubmittedFormInfoObject).length === 0) {
         const formGroup = createElement('div', { class: 'form-group' });
         const label = createElement('label');
-        label.textContent = "Désolé, cette fonctionnalité n'était pas disponible lors du dernier rapport du L.A\nMais pas d'inquiétude vous pourrai retrouver le prochian rapport ici."
+        label.textContent = "Désolé, cette fonctionnalité n'était pas disponible lors du dernier rapport du L.A\nMais pas d'inquiétude vous pourrez retrouver le prochain rapport ici."
         formGroup.appendChild(label);
         form.appendChild(formGroup);
         modal.appendChild(form);
