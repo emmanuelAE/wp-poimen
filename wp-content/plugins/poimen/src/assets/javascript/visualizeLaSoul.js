@@ -13,7 +13,6 @@ const createOptions = function createOptions(element, optionList) {
         element.append(option);
     }
 }
-
 const createForm = function createForm(modal, lastSubmittedFormInfoObject) {
     modal.innerHTML = '';
     const form = createElement('form', { class: 'form-container' });
@@ -33,8 +32,8 @@ const createForm = function createForm(modal, lastSubmittedFormInfoObject) {
         const formGroup = createElement('div', { class: 'form-group' });
         const label = createElement('label', { for: key });
         label.textContent = key;
-        const input = createElement('input', { type: 'text', value: value, id: key });
-        input.setAttribute('readonly', true);
+        const input = value.length > 10 ? createElement('textarea', { id: key, readonly: true }) : createElement('input', { type: 'text', value: value, id: key, readonly: true });
+        input.value = value;
         formGroup.appendChild(label);
         formGroup.appendChild(input);
         form.appendChild(formGroup);
@@ -42,12 +41,14 @@ const createForm = function createForm(modal, lastSubmittedFormInfoObject) {
     modal.appendChild(form);
 }
 
+
 const __getFormData = function __getFormData(soulName, selectedUserObject) {
     let lastSubmittedFormInfoObject = {};
     if (selectedUserObject.hasOwnProperty('userAssociatedClients')) {
         var associatedClients = selectedUserObject.userAssociatedClients;
         Object.keys(associatedClients).forEach(function(key) {
-            if (associatedClients[key].hasOwnProperty('last_submitted_form_info') && associatedClients[key].last_submitted_form_info['Liste déroulante'] === soulName) {
+            // Modifier nom de l'âme pour correspondre à la clé de l'objet associé
+            if (associatedClients[key].hasOwnProperty('last_submitted_form_info') && associatedClients[key].last_submitted_form_info["Nom de l'âme"] === soulName) {
                 lastSubmittedFormInfoObject = associatedClients[key].last_submitted_form_info;
             }
         });
@@ -56,6 +57,7 @@ const __getFormData = function __getFormData(soulName, selectedUserObject) {
 }
 
 const createModalWindow = function createModalWindow(soulName, selectedUserObject) {
+	console.log(selectedUserObject) ;
     const lastSubmittedFormInfoObject = __getFormData(soulName, selectedUserObject);
     const modalContainer = createElement('div', { class: 'overlay modal-container' });
     const modalOverlay = createElement('div', { class: 'modal-overlay' });
@@ -95,6 +97,7 @@ const getUsers = function getUsers() {
             userLastFormInfos: user.user_meta.last_submitted_form_info
         });
     }
+	console.log(users);
     return users;
 }
 
@@ -109,10 +112,7 @@ const getUserNames = function getUserNames() {
 const createReportButton = function createReportButton() {
     const button = createElement('button', { class: 'report-button modal-trigger' });
     const icon = createElement('i', { class: 'fa-regular fa-clipboard' });
-    // const buttonText = createElement('span'); // Créez une balise span pour le texte du bouton
-    // buttonText.textContent = "Report"; // Ajoutez le texte du bouton à la balise span
     button.appendChild(icon);
-    // button.appendChild(buttonText); // Ajoutez à la fois l'icône et le texte au bouton
     return button;
 }
 
@@ -133,6 +133,7 @@ const fillListe = function fillListe() {
 }
 
 const users = getUsers();
+console.log(datas);
 var selectedUser = '';
 select = document.querySelector('#leader-accompagnateur');
 liste = document.querySelector(`.custom-list`);
