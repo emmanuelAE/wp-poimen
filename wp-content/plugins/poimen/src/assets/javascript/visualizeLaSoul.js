@@ -47,7 +47,6 @@ const __getFormData = function __getFormData(soulName, selectedUserObject) {
     if (selectedUserObject.hasOwnProperty('userAssociatedClients')) {
         var associatedClients = selectedUserObject.userAssociatedClients;
         Object.keys(associatedClients).forEach(function(key) {
-            // Modifier nom de l'âme pour correspondre à la clé de l'objet associé
             if (associatedClients[key].hasOwnProperty('last_submitted_form_info') && associatedClients[key].last_submitted_form_info["Nom de l'âme"] === soulName) {
                 lastSubmittedFormInfoObject = associatedClients[key].last_submitted_form_info;
             }
