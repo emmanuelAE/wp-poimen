@@ -15,6 +15,9 @@ class PoimenObject {
         // Dropdown
         add_action('wp_enqueue_scripts', [$this, 'enqueueDropdownScript']);
 
+        // SMS Sender
+        $this->smsSender = new SmsObject() ;
+
     }
     
     public function customCron($schedules) {
@@ -54,6 +57,8 @@ class PoimenObject {
             return ;
         }
 
+        $message = self::__createEmailBody($lateLeader) ;
+        $this->smsSender->sendSms("",$message) ; 
         self::sendEmail(ADMIN_EMAIL, EMAIL_SUBJECT, self::__createEmailBody($lateLeader)) ;
         
     } 
