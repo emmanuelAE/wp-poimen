@@ -87,6 +87,7 @@ class WPFormObject {
             'reminder_level' => 0 // Ajout de cet attribut pour gerer les rappels. Cela sert à inviter de spamer
                                                     // les L.A avec des rappels des mêmes âmes à chaque email
         );
+        update_user_meta($leaderID, 'associated_clients', $leaderSouls);
     }
     
     public function __removeSoulFromLeader(int $leaderID, string $soulName) {
