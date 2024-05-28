@@ -3,7 +3,7 @@
 Plugin Name: poimen
 Plugin URI: http://example.com
 Description: poimen
-Version: 0.2.3.4
+Version: 0.2.3.5
 Author: poimen
 Author URI: http://example.com
 License: GPL2
