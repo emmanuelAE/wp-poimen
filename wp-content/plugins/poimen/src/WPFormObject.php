@@ -5,9 +5,9 @@ class WPFormObject {
         error_log("WPFORMOBJECT : Creation de l'object WPFormObject");
         add_action('wpforms_process_entry_save', [$this, 'processEntries'], 10, 4);
 
-        // Custom tags 
-        add_filter('wpforms_smart_tags' , '__wpf_register_LA_email_smarttag', 10,1) ;
-        add_filter('wpforms_smart_tag_process', '__LA_email_custom_tag', 10, 1) ;
+        // Custom tags
+        add_filter('wpforms_smart_tags' , [$this, '__wpf_register_LA_email_smarttag'], 10,1) ;
+        add_filter('wpforms_smart_tag_process', [$this, '__LA_email_custom_tag'], 10, 1) ;
     }
     
     public function verifyEntries($fields, $entry, $form_data, $entry_id) {
@@ -147,11 +147,13 @@ class WPFormObject {
             }
 
         }
+        error_log('__LA_email_custom_tag'.print_r($content)) ; 
         return $content ;
     }
 
     public function __wpf_register_LA_email_smarttag($tags){
         $tags['LA_email'] = 'LA_email' ; 
+        error_log('tags'.print_r($tags)) ;
         return $tags ;
     }
 
