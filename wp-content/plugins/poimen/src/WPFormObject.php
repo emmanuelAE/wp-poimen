@@ -4,10 +4,6 @@ class WPFormObject {
     public function __construct() {
         error_log("WPFORMOBJECT : Creation de l'object WPFormObject");
         add_action('wpforms_process_entry_save', [$this, 'processEntries'], 10, 4);
-
-        // Custom tags
-        add_filter('wpforms_smart_tags' , [$this, '__wpf_register_LA_email_smarttag'], 10,1) ;
-        add_filter('wpforms_smart_tag_process', [$this, '__LA_email_custom_tag'], 10, 1) ;
     }
     
     public function verifyEntries($fields, $entry, $form_data, $entry_id) {
@@ -66,8 +62,7 @@ class WPFormObject {
         $subject = "Une nouvelle action de votre administrateur";
         $message = "L'âme ". $soulName . ' vient de vous être ' . $action . 
         '.Voici quelques commentaires de votre administrateur : ' . $fields[GESTION_COMMENT_FIELD_ID]['value'];
-        //sleep(2) ; 
-        //self::sendEmail(array($leaderEmail), $subject, $message);
+        self::sendEmail(array($leaderEmail), $subject, $message);
 
     }
 
@@ -132,29 +127,6 @@ class WPFormObject {
                 return ;
             }
         }
-    }
-
-    public function __LA_email_custom_tag($content, $tag){
-        if ($tag === 'LA_email'){
-            
-            if (isset( $_POST['wpforms']['fields'][GESTION_LEADER_FIELD_ID] ) ) {
-                $email = sanitize_email( $_POST['wpforms']['fields'][GESTION_LEADER_FIELD_ID] );
-                // Replace the tag with the email.
-                $content = str_replace( '{LA_email}', $email, $content );
-            }
-            else {
-                $content = str_replace( '{LA_email}', '', $content ) ;
-            }
-
-        }
-        error_log('__LA_email_custom_tag'.print_r($content)) ; 
-        return $content ;
-    }
-
-    public function __wpf_register_LA_email_smarttag($tags){
-        $tags['LA_email'] = 'LA_email' ; 
-        error_log('tags'.print_r($tags)) ;
-        return $tags ;
     }
 
 }
