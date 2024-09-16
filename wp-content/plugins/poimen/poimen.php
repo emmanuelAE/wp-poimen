@@ -116,8 +116,9 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-$poimenController = new PoimenObject(__FILE__);
-$wpformController = new WPFormObject();
+// Object creation
+$poimenController = PoimenObject::getInstance(__FILE__);
+$wpformController = WPFormObject::getInstance();
 
 // error_log('POIMEN : REMINDERS'.FIRST_REMINDER .'-'.SECOND_REMINDER ) ; 
 

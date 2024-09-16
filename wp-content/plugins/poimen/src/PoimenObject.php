@@ -2,6 +2,14 @@
 namespace IccGrenoble\Poimen ; 
 
 class PoimenObject { 
+    // Singleton
+    private static $instance = null;
+    public static function getInstance(string $file) {
+        if (self::$instance === null) {
+            self::$instance = new PoimenObject($file);
+        }
+        return self::$instance;
+    }
     
     public function __construct(string $file) {
         // print to the navigation console
@@ -35,7 +43,7 @@ class PoimenObject {
         // affichage de l'heure 
         error_log('POIMENOBJECT : heure : '.date('Y-m-d H:i:s',time()));
 
-        // Check if we need to notify admins 
+        // Notify admins 
         $this->__notifyAdmin() ;
         // Notify the late leaders
         $this->__reminderLeader() ;
