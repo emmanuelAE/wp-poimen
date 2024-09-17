@@ -1,16 +1,6 @@
 <?php
 namespace IccGrenoble\Poimen ; 
 class WPFormObject {
-    //Singleton
-    private static $instance = null;
-
-    public static function getInstance() {
-        if (self::$instance === null) {
-            self::$instance = new WPFormObject();
-        }
-        return self::$instance;
-    }
-    
     public function __construct() {
         error_log("WPFORMOBJECT : Creation de l'object WPFormObject");
         add_action('wpforms_process_entry_save', [$this, 'processEntries'], 10, 4);

@@ -23,9 +23,10 @@ function __createProdConstants(){
     define('DEADLINE', '-'.FILL_FREQUENCY.FILL_NUMBER);
 
     define('FIRST_REMINDER', '-'.(FILL_FREQUENCY-3).FILL_NUMBER);
-    define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\nMerci et Bonne journée.");
+    define('FIRST_REMINDER_MESSAGE',"Bonjour cher Leader Accompagnateur, \r\nVous n'avez pas rempli le formulaire pour certaines de vos âmes.\r\nIl vous reste 3 jours avant le rapport de non soumission.\r\n.");
     define('SECOND_REMINDER', '-'.(FILL_FREQUENCY-1).FILL_NUMBER);
-    define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\nMerci et Bonne journée.");
+    define('SECOND_REMINDER_MESSAGE',"Bonjour cher Leader Accompagnateur, \r\nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\r\nIl vous reste 1 jour avant le rapport de non soumission.\r\n.");
+    define('DAILY_REMINDER', "Bonjour cher Leader Accompagnateur, \r\nVous, n'avez pas rempli le formulaire pour certaines de vos âmes.\r\n");
 
     // Email Constant
     define(
@@ -34,9 +35,9 @@ function __createProdConstants(){
     );
     define('EMAIL_SUBJECT', 'Rapport de non soumission') ;
     define(
-        'ADMIN_EMAIL_BODY', "Ces différents leaders accompagnateurs n'ont pas renseigné le formulaire pour les âmes suivantes :\n "
+        'ADMIN_EMAIL_BODY', "Ces différents leaders accompagnateurs n'ont pas renseigné le formulaire pour les âmes suivantes :\r\n "
     ) ;
-    define('LEADER_EMAIL_BODY',"Bonjour,\nVous n'avez pas rempli le formulaire pour les âmes suivantes : \n\n");
+    define('LEADER_EMAIL_BODY',"Bonjour,\r\nVous n'avez pas rempli le formulaire pour les âmes suivantes : \r\n\r\n");
 
     // Formulaires constant
     define('SUIVI_PAGE_NAME', 'suivi-des-ames') ; 
@@ -64,9 +65,9 @@ function __createProdConstants(){
 //     define('DEADLINE', '-'.FILL_FREQUENCY.FILL_NUMBER);
 
 //     define('FIRST_REMINDER', '-'.(FILL_FREQUENCY-4).FILL_NUMBER);
-//     define('FIRST_REMINDER_MESSAGE',"Bonjour, \nVous n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 3 jours avant le rapport de non soumission.\n.");
+//     define('FIRST_REMINDER_MESSAGE',"Bonjour, \r\nVous n'avez pas rempli le formulaire pour certaines de vos âmes.\r\nIl vous reste 3 jours avant le rapport de non soumission.\r\n.");
 //     define('SECOND_REMINDER', '-'.(FILL_FREQUENCY-2).FILL_NUMBER);
-//     define('SECOND_REMINDER_MESSAGE',"Bonjour, \nVous n'avez pas rempli le formulaire pour certaines de vos âmes.\nIl vous reste 1 jour avant le rapport de non soumission.\n.");
+//     define('SECOND_REMINDER_MESSAGE',"Bonjour, \r\nVous n'avez pas rempli le formulaire pour certaines de vos âmes.\r\nIl vous reste 1 jour avant le rapport de non soumission.\r\n.");
 
 //     // Email Constant
 //     define(
@@ -74,9 +75,9 @@ function __createProdConstants(){
 //     );
 //     define('EMAIL_SUBJECT', 'Rapport de non soumission') ;
 //     define(
-//         'ADMIN_EMAIL_BODY', "Ces différents leaders accompagnateurs n'ont pas renseigné le formulaire pour les âmes suivantes :\n "
+//         'ADMIN_EMAIL_BODY', "Ces différents leaders accompagnateurs n'ont pas renseigné le formulaire pour les âmes suivantes :\r\n "
 //     ) ;
-//  define('LEADER_EMAIL_BODY',"Bonjour,\nVous n'avez pas rempli le formulaire pour les âmes suivantes : \n\n");
+//  define('LEADER_EMAIL_BODY',"Bonjour,\r\nVous n'avez pas rempli le formulaire pour les âmes suivantes : \r\n\r\n");
 
 //     // Formulaires constant
 //     define('SUIVI_PAGE_NAME', 'suivi-des-ames') ; 
@@ -117,8 +118,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Object creation
-$poimenController = PoimenObject::getInstance(__FILE__);
-$wpformController = WPFormObject::getInstance();
+$poimenController = new PoimenObject(__FILE__);
+$wpformController = new WPFormObject();
 
 // error_log('POIMEN : REMINDERS'.FIRST_REMINDER .'-'.SECOND_REMINDER ) ; 
 

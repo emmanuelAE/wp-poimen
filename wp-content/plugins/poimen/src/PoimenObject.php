@@ -2,15 +2,6 @@
 namespace IccGrenoble\Poimen ; 
 
 class PoimenObject { 
-    // Singleton
-    private static $instance = null;
-    public static function getInstance(string $file) {
-        if (self::$instance === null) {
-            self::$instance = new PoimenObject($file);
-        }
-        return self::$instance;
-    }
-    
     public function __construct(string $file) {
         // print to the navigation console
         error_log("POIMENOBJECT : Creation de l'object PoimenObject");
@@ -51,10 +42,21 @@ class PoimenObject {
         //     self::sendEmail($leader['email'], EMAIL_SUBJECT, self::__createEmailBody([$leader], false)) ;
         // }
 
+        $this->__notify_all_late_leaders();
+
     }
 
     public function __notifyAdmin() {
         // Notify the admin of the late leaders
+        
+        $meta_key = 'notify_admin_last_run';
+        $today = date('Y-m-d');
+        $last_run = get_option($meta_key);
+        
+        if($last_run === $today){
+            return;
+        }
+
         $lateLeader = self::__lateLeader() ;
         $___lateLeader = print_r($lateLeader, true) ;
         // error_log('POIMENOBJECT : Late Leader : ' . $___lateLeader) ;
@@ -63,7 +65,7 @@ class PoimenObject {
         }
 
         self::sendEmail(ADMIN_EMAIL, EMAIL_SUBJECT, self::__createEmailBody($lateLeader)) ;
-        
+       update_option($meta_key, $today); 
     } 
     
     public function __lateLeader(string $DEADLINE = DEADLINE) {
@@ -100,6 +102,32 @@ class PoimenObject {
         }
         return $lateLeader;
     }
+    public function __notify_all_late_leaders() {
+
+        $meta_key = '__notify_all_late_leaders_last_run';
+        $today = date('Y-m-d');
+        $last_run = get_option($meta_key);
+
+        if ($last_run === $today){
+            return;
+        }
+        // Récupère tous les leaders en retard
+        $lateLeaders = self::__lateLeader(DEADLINE);
+        
+        if (!empty($lateLeaders)) {
+            foreach ($lateLeaders as $leader) {
+                // Créer un message personnalisé pour chaque leader
+                $soulNames = array_column($leader['notSubmittedSoulDetails'], 'name');
+                if (!empty($soulNames)) {
+                    $message = DAILY_REMINDER . "Voici les âmes dont les rapports n'ont pas été soumis : " . implode(", ", $soulNames) . ".\r\nMerci et bonne journée.";
+                    // Envoyer le message à l'email du leader
+                    self::sendEmail([$leader['email']], 'Rappel de soumission', $message);
+                }
+            }
+        }
+        update_option($meta_key, $today);
+    }
+
 
     public function __reminderLeader() {
         $firstReminderLateLeader = self::__lateLeader(FIRST_REMINDER);
@@ -157,12 +185,12 @@ class PoimenObject {
     
         // Envoi des emails de rappel
         foreach ($firstReminderEmails as $reminder) {
-            $message = FIRST_REMINDER_MESSAGE . "Voici les âmes dont les rapports n'ont pas été soumis : " . implode(',  ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            $message = FIRST_REMINDER_MESSAGE . "Voici les âmes dont les rapports n'ont pas été soumis : " . implode(',  ', $reminder['soulNames']) . ".\r\nMerci et bonne journée.";
             self::sendEmail([$reminder['email']], 'Rappel', $message);
         }
     
         foreach ($secondReminderEmails as $reminder) {
-            $message = SECOND_REMINDER_MESSAGE . " Voici les âmes non soumises : " . implode(', ', $reminder['soulNames']) . ".\n\nMerci et bonne journée.";
+            $message = SECOND_REMINDER_MESSAGE . "Voici les âmes dont les rapports n'ont pas été soumis : " . implode(', ', $reminder['soulNames']) . ".\r\nMerci et bonne journée.";
             self::sendEmail([$reminder['email']], 'Rappel', $message);
         }
     
